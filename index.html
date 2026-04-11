@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <title>PayPal Käuferschutz Rechner</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg viewBox='-1.5 0 20 20' xmlns='http://www.w3.org/2000/svg'><g transform='translate(-166 -7399)' fill='%23003087'><path d='M182.475463,7404.9 C181.260804,7410.117 177.555645,7411 172.578656,7411 L171.078137,7419 L173.825411,7419 C174.325918,7419 174.53555,7418.659 174.627828,7418.179 C175.312891,7413.848 175.216601,7414.557 175.278788,7413.879 C175.337966,7413.501 175.664951,7413 176.049108,7413 C179.698098,7413 182.118387,7411.945 182.857614,7408.158 C183.120405,7406.811 183.034145,7405.772 182.475463,7404.9 M171.134306,7410.86 L170.011926,7417 L166.535456,7417 C166.206465,7417 165.954707,7416.598 166.006864,7416.274 L168.602682,7399.751 C168.670887,7399.319 169.045014,7399 169.484337,7399 L175.718111,7399 C179.409228,7399 181.894714,7400.401 181.319983,7404.054 C180.313953,7410.56 174.737157,7410 172.199514,7410 C171.760191,7410 171.203515,7410.428 171.134306,7410.86'/></g></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<div class="page-layout">
+
+  <!-- ===== HAUPT-KARTE ===== -->
+  <div class="card">
+
+    <div class="card-header">
+      <svg class="pp-logo" viewBox="-1.5 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <g transform="translate(-166 -7399)" fill="#003087">
+          <path d="M182.475463,7404.9 C181.260804,7410.117 177.555645,7411 172.578656,7411 L171.078137,7419 L173.825411,7419 C174.325918,7419 174.53555,7418.659 174.627828,7418.179 C175.312891,7413.848 175.216601,7414.557 175.278788,7413.879 C175.337966,7413.501 175.664951,7413 176.049108,7413 C179.698098,7413 182.118387,7411.945 182.857614,7408.158 C183.120405,7406.811 183.034145,7405.772 182.475463,7404.9 M171.134306,7410.86 L170.011926,7417 L166.535456,7417 C166.206465,7417 165.954707,7416.598 166.006864,7416.274 L168.602682,7399.751 C168.670887,7399.319 169.045014,7399 169.484337,7399 L175.718111,7399 C179.409228,7399 181.894714,7400.401 181.319983,7404.054 C180.313953,7410.56 174.737157,7410 172.199514,7410 C171.760191,7410 171.203515,7410.428 171.134306,7410.86"/>
+        </g>
+      </svg>
+      <h1>Käuferschutz Gebührenrechner</h1>
+    </div>
+
+    <!-- Eingabe -->
+    <div class="input-section">
+      <label for="amountIn">Empfänger soll erhalten:</label>
+      <div class="inputRow">
+        <div class="euro-wrap" id="euroWrap">
+          <span class="euro-sign">€</span>
+          <input id="amountIn" placeholder="z.B. 49,99" autocomplete="off" inputmode="decimal" autofocus>
+        </div>
+        <button class="clearBtn" id="clearAll" type="button" title="Eingabe löschen" aria-label="Löschen">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+            <path d="M10 11v6"/><path d="M14 11v6"/>
+            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+          </svg>
+        </button>
+      </div>
+      <div class="inputError" id="amountError">Bitte einen gültigen Betrag eingeben</div>
+    </div>
+
+    <!-- Ausland-Toggle -->
+    <div class="abroad-section">
+      <div class="toggleRow">
+        <span class="toggleLabel">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-sm" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="2" y1="12" x2="22" y2="12"/>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+          </svg>
+          Senden ins Ausland
+        </span>
+        <label class="switch" for="abroadToggle">
+          <input type="checkbox" id="abroadToggle" role="switch" aria-label="Senden ins Ausland">
+          <span class="switchTrack" aria-hidden="true"></span>
+        </label>
+      </div>
+
+      <div class="ewrWrapper" id="ewrWrapper">
+        <div class="pill-toggle" role="group" aria-label="EWR-Zone">
+          <button class="pill-btn active" id="ewrIn" type="button" aria-pressed="true">
+            Innerhalb EWR
+            <span class="pill-rate">+1,29%</span>
+          </button>
+          <button class="pill-btn" id="ewrOut" type="button" aria-pressed="false">
+            Außerhalb EWR
+            <span class="pill-rate">+1,99%</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trennlinie -->
+    <div class="h-divider" aria-hidden="true"></div>
+
+    <!-- Ergebnis -->
+    <div class="result-section">
+      <div class="modeLabel">Du musst senden</div>
+      <div class="big" id="sendAmount">0,00&thinsp;€</div>
+
+      <div class="breakdown">
+        <div class="bdRow">
+          <span>Gewünschter Betrag</span>
+          <span id="desiredDisplay">0,00&thinsp;€</span>
+        </div>
+        <div class="bdRow bd-fee">
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-sm" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="16"/>
+              <line x1="8" y1="12" x2="16" y2="12"/>
+            </svg>
+            PayPal-Gebühr
+          </span>
+          <span id="feeDisplay">+ 0,00&thinsp;€</span>
+        </div>
+        <div class="bd-tariff" id="tariffDisplay" title="">–</div>
+      </div>
+
+      <button class="copyBtn" id="copyBtn" type="button" title="Betrag kopieren" aria-label="Betrag kopieren">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="9" y="9" width="13" height="13" rx="2"/>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+        </svg>
+      </button>
+      <span class="copy-toast" id="copyToast" aria-live="polite">Kopiert!</span>
+    </div>
+
+  </div>
+
+  <!-- ===== INFO-PANEL (schwebt rechts) ===== -->
+  <div class="info-panel">
+
+    <div class="info-header">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="info-icon" aria-hidden="true">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <circle cx="12" cy="16" r=".5" fill="currentColor"/>
+      </svg>
+      Aktuelle Gebühren
+    </div>
+
+    <div class="fee-table">
+      <div class="fee-cat">Waren &amp; Dienstleistungen</div>
+      <div class="fee-item">
+        <span class="fee-name">Standard (≥&thinsp;10,00&thinsp;€)</span>
+        <code class="fee-val">2,49% + 0,35&thinsp;€</code>
+      </div>
+      <div class="fee-item fee-micro">
+        <span class="fee-name">Mikrozahlung (&lt;&thinsp;10,00&thinsp;€)</span>
+        <code class="fee-val">4,99% + 0,09&thinsp;€</code>
+      </div>
+
+      <div class="fee-cat">Auslandsgebühr</div>
+      <div class="fee-item">
+        <span class="fee-name">Innerhalb EWR</span>
+        <code class="fee-val">+ 1,29%</code>
+      </div>
+      <div class="fee-item">
+        <span class="fee-name">Außerhalb EWR</span>
+        <code class="fee-val">+ 1,99%</code>
+      </div>
+    </div>
+
+    <div class="info-footer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shield-icon" aria-hidden="true">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+      <span>
+        Käuferschutz gilt nur bei Zahlung als<br>
+        „Waren &amp; Dienstleistungen"<br>
+        <small>Stand April 2026 · Deutschland<br>Angabe ohne Gewähr</small>
+      </span>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="credit" id="credit">
+  <span class="credit-before">made with&nbsp;&nbsp;&nbsp;&nbsp;</span>
+  <span class="credit-heart" id="creditHeart">❤️</span>
+  <span class="credit-after">&nbsp;&nbsp;&nbsp;&nbsp;by <a href="https://www.eliasslt.de" target="_blank" rel="noopener noreferrer">elias</a></span>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
