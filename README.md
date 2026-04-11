@@ -10,7 +10,7 @@ Funktioniert sowohl auf dem Desktop als auch im mobilen Browser.
 Repository klonen und `index.html` in einem modernen Browser öffnen:
 
 ```
-git clone https://github.com/eliasschlinkert/german-vat-calculator.git
+git clone https://github.com/eliasschlinkert/paypal-kauferschutz-rechner.git
 ```
 
 Keine weitere Installation oder Abhängigkeiten erforderlich.
