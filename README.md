@@ -3,6 +3,9 @@
 Ein einfaches, browserbasiertes Tool zur Berechnung von PayPal Käuferschutz Gebühren.  
 Errechne schnell, wie viel du senden musst, damit der gewünschte Betrag beim Empfänger ankommt.
 
+Funktioniert sowohl auf dem Desktop als auch im mobilen Browser.
+
+
 ---
 
 ## Installation

@@ -18,8 +18,15 @@ const feeEl        = document.getElementById('feeDisplay');
 const tariffEl     = document.getElementById('tariffDisplay');
 const copyBtn      = document.getElementById('copyBtn');
 const copyToast    = document.getElementById('copyToast');
+const credit       = document.getElementById('credit');
+const creditHeart  = document.getElementById('creditHeart');
+const mobileInfoBtn  = document.getElementById('mobileInfoBtn');
+const infoPanelEl    = document.getElementById('infoPanel');
+const infoPanelClose = document.getElementById('infoPanelClose');
+const mobileBackdrop = document.getElementById('mobileBackdrop');
 
 const nf = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
+const isTouchDevice = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
 
 function shake(el) {
   el.classList.remove('shake');
@@ -55,28 +62,19 @@ const MAX_DIGITS = 6;
 function calculate() {
   const raw = amountIn.value.trim();
 
-  if (!raw) {
-    resetResult();
-    return;
-  }
+  if (!raw) { resetResult(); return; }
 
   const amount = parseInput(raw);
 
-  if (isNaN(amount) || amount <= 0) {
-    resetResult();
-    return;
-  }
+  if (isNaN(amount) || amount <= 0) { resetResult(); return; }
 
   const abroad  = abroadToggle.checked;
   const isEwr   = ewrInBtn.classList.contains('active');
-
   const isMicro = amount < FEES.micro.threshold;
   const base    = isMicro ? FEES.micro : FEES.standard;
   let rate      = base.rate;
   const fixed   = base.fixed;
-
-  const baseName = isMicro ? 'Mikro' : 'Standard';
-  let tariffStr  = baseName;
+  let tariffStr = isMicro ? 'Mikro' : 'Standard';
 
   if (abroad) {
     const surcharge = isEwr ? FEES.abroad.ewr : FEES.abroad.nonEwr;
@@ -105,6 +103,40 @@ function resetResult() {
   tariffEl.title           = '';
 }
 
+function showError() {
+  amountError.textContent = 'Maximal 6 Ziffern erlaubt';
+  amountError.classList.add('visible');
+  shake(amountError);
+}
+
+function hideError() {
+  amountError.classList.remove('visible');
+}
+
+function openInfoPanel() {
+  infoPanelEl.classList.add('open');
+  mobileBackdrop.classList.add('visible');
+  mobileInfoBtn.setAttribute('aria-expanded', 'true');
+}
+
+function closeInfoPanel() {
+  infoPanelEl.classList.remove('open');
+  mobileBackdrop.classList.remove('visible');
+  mobileInfoBtn.setAttribute('aria-expanded', 'false');
+}
+
+function normalizePasteInput(raw) {
+  const s      = raw.trim().replace(/[^0-9,.]/g, '');
+  const dots   = (s.match(/\./g) || []).length;
+  const commas = (s.match(/,/g) || []).length;
+  if (!s) return null;
+  if (dots === 0 && commas === 0) return s;
+  if (dots === 0 && commas === 1) return s;
+  if (dots === 1 && commas === 0) return s.replace('.', ',');
+  if (dots >= 1 && commas === 1) return s.replace(/\./g, '');
+  return null;
+}
+
 amountIn.addEventListener('keydown', (e) => {
   if (e.ctrlKey || e.metaKey || e.altKey) return;
   if (e.key === 'Dead') { e.preventDefault(); shake(euroWrap); return; }
@@ -130,11 +162,7 @@ amountIn.addEventListener('beforeinput', (e) => {
     return;
   }
 
-  if (!/^[0-9,]$/.test(e.data)) {
-    e.preventDefault();
-    shake(euroWrap);
-    return;
-  }
+  if (!/^[0-9,]$/.test(e.data)) { e.preventDefault(); shake(euroWrap); return; }
 
   if (e.data === ',') {
     if (base.includes(',') || base.length === 0) { e.preventDefault(); shake(euroWrap); }
@@ -155,11 +183,7 @@ amountIn.addEventListener('beforeinput', (e) => {
     const commaIdx = base.indexOf(',');
     if (commaIdx !== -1 && start > commaIdx) {
       const decimals = base.substring(commaIdx + 1).replace(/[^0-9]/g, '').length;
-      if (decimals >= 2) {
-        e.preventDefault();
-        shake(euroWrap);
-        return;
-      }
+      if (decimals >= 2) { e.preventDefault(); shake(euroWrap); return; }
     }
   }
 });
@@ -188,31 +212,7 @@ amountIn.addEventListener('paste', (e) => {
   calculate();
 });
 
-function normalizePasteInput(raw) {
-  const s      = raw.trim().replace(/[^0-9,.]/g, '');
-  const dots   = (s.match(/\./g) || []).length;
-  const commas = (s.match(/,/g) || []).length;
-  if (!s) return null;
-  if (dots === 0 && commas === 0) return s;
-  if (dots === 0 && commas === 1) return s;
-  if (dots === 1 && commas === 0) return s.replace('.', ',');
-  if (dots >= 1 && commas === 1) return s.replace(/\./g, '');
-  return null;
-}
-
-amountIn.addEventListener('input', () => {
-  hideError();
-  calculate();
-});
-
-function showError() {
-  amountError.textContent = 'Maximal 6 Ziffern erlaubt';
-  amountError.classList.add('visible');
-  shake(amountError);
-}
-function hideError() {
-  amountError.classList.remove('visible');
-}
+amountIn.addEventListener('input', () => { hideError(); calculate(); });
 
 clearAllBtn.addEventListener('click', () => {
   amountIn.value = '';
@@ -249,7 +249,6 @@ copyBtn.addEventListener('click', () => {
     copyBtn.classList.add('copied');
     clearTimeout(copyTimeout);
     copyTimeout = setTimeout(() => copyBtn.classList.remove('copied'), 1500);
-
     copyToast.classList.remove('show');
     void copyToast.offsetWidth;
     copyToast.classList.add('show');
@@ -257,28 +256,28 @@ copyBtn.addEventListener('click', () => {
 });
 
 window.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    e.preventDefault();
-    const infoPanel = document.getElementById('infoPanel');
-    if (infoPanel && infoPanel.classList.contains('open')) {
-      closeInfoPanel();
-      return;
-    }
-    amountIn.value = '';
-    hideError();
-    resetResult();
-    amountIn.focus();
+  if (e.key !== 'Escape') return;
+  e.preventDefault();
+  if (infoPanelEl.classList.contains('open')) {
+    closeInfoPanel();
+    return;
   }
+  amountIn.value = '';
+  hideError();
+  resetResult();
+  amountIn.focus();
 });
 
-const credit      = document.getElementById('credit');
-const creditHeart = document.getElementById('creditHeart');
+mobileInfoBtn.addEventListener('click', () => {
+  infoPanelEl.classList.contains('open') ? closeInfoPanel() : openInfoPanel();
+});
+
+infoPanelClose.addEventListener('click', closeInfoPanel);
+mobileBackdrop.addEventListener('click', closeInfoPanel);
 
 creditHeart.addEventListener('animationend', () => {
   creditHeart.classList.remove('beating');
 });
-
-const isTouchDevice = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
 
 if (isTouchDevice) {
   creditHeart.addEventListener('click', (e) => {
@@ -302,33 +301,5 @@ if (isTouchDevice) {
   });
 }
 
-const mobileInfoBtn  = document.getElementById('mobileInfoBtn');
-const infoPanelEl    = document.getElementById('infoPanel');
-const infoPanelClose = document.getElementById('infoPanelClose');
-const mobileBackdrop = document.getElementById('mobileBackdrop');
-
-function openInfoPanel() {
-  infoPanelEl.classList.add('open');
-  mobileBackdrop.classList.add('visible');
-  mobileInfoBtn.setAttribute('aria-expanded', 'true');
-}
-
-function closeInfoPanel() {
-  infoPanelEl.classList.remove('open');
-  mobileBackdrop.classList.remove('visible');
-  mobileInfoBtn.setAttribute('aria-expanded', 'false');
-}
-
-mobileInfoBtn.addEventListener('click', () => {
-  if (infoPanelEl.classList.contains('open')) {
-    closeInfoPanel();
-  } else {
-    openInfoPanel();
-  }
-});
-
-infoPanelClose.addEventListener('click', closeInfoPanel);
-mobileBackdrop.addEventListener('click', closeInfoPanel);
-
 resetResult();
-amountIn.focus();
+if (!isTouchDevice) amountIn.focus();
