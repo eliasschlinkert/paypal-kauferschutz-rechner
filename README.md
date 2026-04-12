@@ -1,16 +1,22 @@
-# 💸 PayPal Käuferschutz Gebührenrechner
+# PayPal Käuferschutz Gebührenrechner
 
-Ein einfaches, browserbasiertes Tool zur Berechnung von Paypal Käuferschutz Gebühren.   
-Errechne schnell und einfach wie viel du senden musst, damit der erwartete Betrag beim Empfänger ankommt.
+Ein einfaches, browserbasiertes Tool zur Berechnung von PayPal Käuferschutz Gebühren.  
+Errechne schnell, wie viel du senden musst, damit der gewünschte Betrag beim Empfänger ankommt.
 
-Funktioniert sowohl auf dem Desktop als auch im mobilen Browser.
+---
 
-## Verwendung
+## Installation
 
-Repository klonen und `index.html` in einem modernen Browser öffnen:
-
-```
+```bash
 git clone https://github.com/eliasschlinkert/paypal-kauferschutz-rechner.git
 ```
 
-Keine weitere Installation oder Abhängigkeiten erforderlich.
+Danach `index.html` direkt im Browser öffnen — keine Abhängigkeiten, keine Installation.
+
+Bei Bedarf kann zusätzlich ein lokaler Webserver aufgesetzt werden.
+
+---
+
+## Lizenz
+
+[MIT](LICENSE)

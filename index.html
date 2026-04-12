@@ -15,7 +15,6 @@
 
 <div class="page-layout">
 
-  <!-- ===== HAUPT-KARTE ===== -->
   <div class="card">
 
     <div class="card-header">
@@ -27,7 +26,6 @@
       <h1>Käuferschutz Gebührenrechner</h1>
     </div>
 
-    <!-- Eingabe -->
     <div class="input-section">
       <label for="amountIn">Empfänger soll erhalten:</label>
       <div class="inputRow">
@@ -47,7 +45,6 @@
       <div class="inputError" id="amountError">Bitte einen gültigen Betrag eingeben</div>
     </div>
 
-    <!-- Ausland-Toggle -->
     <div class="abroad-section">
       <div class="toggleRow">
         <span class="toggleLabel">
@@ -78,10 +75,8 @@
       </div>
     </div>
 
-    <!-- Trennlinie -->
     <div class="h-divider" aria-hidden="true"></div>
 
-    <!-- Ergebnis -->
     <div class="result-section">
       <div class="modeLabel">Du musst senden</div>
       <div class="big" id="sendAmount">0,00&thinsp;€</div>
@@ -105,6 +100,14 @@
         <div class="bd-tariff" id="tariffDisplay" title="">–</div>
       </div>
 
+      <button class="mobile-info-btn" id="mobileInfoBtn" type="button" aria-label="Gebühren anzeigen" aria-expanded="false" aria-controls="infoPanel">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <circle cx="12" cy="16" r=".5" fill="currentColor"/>
+        </svg>
+      </button>
+
       <button class="copyBtn" id="copyBtn" type="button" title="Betrag kopieren" aria-label="Betrag kopieren">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <rect x="9" y="9" width="13" height="13" rx="2"/>
@@ -116,8 +119,9 @@
 
   </div>
 
-  <!-- ===== INFO-PANEL (schwebt rechts) ===== -->
-  <div class="info-panel">
+  <div class="info-panel" id="infoPanel">
+
+    <div class="info-handle" aria-hidden="true"></div>
 
     <div class="info-header">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="info-icon" aria-hidden="true">
@@ -126,6 +130,11 @@
         <circle cx="12" cy="16" r=".5" fill="currentColor"/>
       </svg>
       Aktuelle Gebühren
+      <button class="info-panel-close" id="infoPanelClose" type="button" aria-label="Schließen">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
     </div>
 
     <div class="fee-table">
@@ -164,6 +173,8 @@
   </div>
 
 </div>
+
+<div class="mobile-backdrop" id="mobileBackdrop" aria-hidden="true"></div>
 
 <div class="credit" id="credit">
   <span class="credit-before">made with&nbsp;&nbsp;&nbsp;&nbsp;</span>

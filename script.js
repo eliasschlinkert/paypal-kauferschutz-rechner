@@ -1,11 +1,9 @@
-// ===== Gebühren – Stand April 2026, Deutschland =====
 const FEES = {
   standard: { rate: 0.0249, fixed: 0.35 },
   micro:    { rate: 0.0499, fixed: 0.09, threshold: 10 },
   abroad:   { ewr: 0.0129, nonEwr: 0.0199 }
 };
 
-// ===== DOM-Referenzen =====
 const amountIn     = document.getElementById('amountIn');
 const euroWrap     = document.getElementById('euroWrap');
 const amountError  = document.getElementById('amountError');
@@ -23,7 +21,6 @@ const copyToast    = document.getElementById('copyToast');
 
 const nf = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
 
-// ===== Hilfsfunktionen =====
 function shake(el) {
   el.classList.remove('shake');
   void el.offsetWidth;
@@ -36,12 +33,9 @@ function round2(n) {
 }
 
 function fmt(n) {
-  // Gibt z. B. "49,99\u202f€" aus (schlankes Leerzeichen vor €)
   return nf.format(n).replace(/ /g, '\u202f');
 }
 
-// Erlaubt: 1.234,56 | 1234,56 | 49,99
-// Punkt = Tausendertrennzeichen (DE), Komma = Dezimaltrennzeichen
 function parseInput(s) {
   const cleaned = (s || '')
     .trim()
@@ -58,7 +52,6 @@ function countDigits(s) {
 
 const MAX_DIGITS = 6;
 
-// ===== Berechnung =====
 function calculate() {
   const raw = amountIn.value.trim();
 
@@ -91,7 +84,6 @@ function calculate() {
     tariffStr += isEwr ? ' · EWR' : ' · Ausland';
   }
 
-  // S = (Gewünschter Betrag + Fixgebühr) / (1 − Prozentualer Satz)
   const sendAmount = round2((amount + fixed) / (1 - rate));
   const fee        = round2(sendAmount - amount);
   const rateStr    = (rate * 100).toFixed(2).replace('.', ',');
@@ -113,9 +105,6 @@ function resetResult() {
   tariffEl.title           = '';
 }
 
-// ===== Eingabefeld: Filter =====
-
-// keydown: nur Zeichenklassen-Filter (. erlaubt → wird in beforeinput zu , konvertiert)
 amountIn.addEventListener('keydown', (e) => {
   if (e.ctrlKey || e.metaKey || e.altKey) return;
   if (e.key === 'Dead') { e.preventDefault(); shake(euroWrap); return; }
@@ -123,17 +112,14 @@ amountIn.addEventListener('keydown', (e) => {
   if (!/^[0-9,.]$/.test(e.key)) { e.preventDefault(); shake(euroWrap); }
 });
 
-// beforeinput: alle semantischen Regeln (auch Mobile-Keyboards ohne keydown)
 amountIn.addEventListener('beforeinput', (e) => {
   if (!e.data) return;
 
   const start = amountIn.selectionStart ?? 0;
   const end   = amountIn.selectionEnd   ?? amountIn.value.length;
   const val   = amountIn.value;
-  // Feldinhalt nach Ersetzen der Selektion (ohne den neuen Charakter)
   const base  = val.substring(0, start) + val.substring(end);
 
-  // Punkt → Komma konvertieren
   if (e.data === '.') {
     e.preventDefault();
     if (base.includes(',') || base.length === 0) { shake(euroWrap); return; }
@@ -144,34 +130,28 @@ amountIn.addEventListener('beforeinput', (e) => {
     return;
   }
 
-  // Nicht erlaubte Zeichen (Mobile-Fallback)
   if (!/^[0-9,]$/.test(e.data)) {
     e.preventDefault();
     shake(euroWrap);
     return;
   }
 
-  // Komma: kein zweites, nicht als erstes Zeichen
   if (e.data === ',') {
     if (base.includes(',') || base.length === 0) { e.preventDefault(); shake(euroWrap); }
     return;
   }
 
-  // Ziffern-Prüfungen
   if (/^[0-9]$/.test(e.data)) {
-    // Führende Null verhindern
     if (e.data === '0' && countDigits(val.substring(0, start)) === 0) {
       e.preventDefault();
       shake(euroWrap);
       return;
     }
-    // Max. 8 Vorkommastellen
     if (countDigits(base) + 1 > MAX_DIGITS) {
       e.preventDefault();
       showError();
       return;
     }
-    // Max. 2 Dezimalstellen
     const commaIdx = base.indexOf(',');
     if (commaIdx !== -1 && start > commaIdx) {
       const decimals = base.substring(commaIdx + 1).replace(/[^0-9]/g, '').length;
@@ -184,7 +164,6 @@ amountIn.addEventListener('beforeinput', (e) => {
   }
 });
 
-// Paste: normalisieren (Punkt/Komma-Logik) und validieren
 amountIn.addEventListener('paste', (e) => {
   e.preventDefault();
   const raw  = (e.clipboardData || window.clipboardData).getData('text');
@@ -209,17 +188,16 @@ amountIn.addEventListener('paste', (e) => {
   calculate();
 });
 
-// Normalisiert eingefügten Text auf deutsches Kommaformat
 function normalizePasteInput(raw) {
   const s      = raw.trim().replace(/[^0-9,.]/g, '');
   const dots   = (s.match(/\./g) || []).length;
   const commas = (s.match(/,/g) || []).length;
   if (!s) return null;
-  if (dots === 0 && commas === 0) return s;                   // reine Zahl
-  if (dots === 0 && commas === 1) return s;                   // 49,99
-  if (dots === 1 && commas === 0) return s.replace('.', ','); // 49.99 → 49,99
-  if (dots >= 1 && commas === 1) return s.replace(/\./g, ''); // 1.234,56 → 1234,56
-  return null; // mehrdeutig → ablehnen
+  if (dots === 0 && commas === 0) return s;
+  if (dots === 0 && commas === 1) return s;
+  if (dots === 1 && commas === 0) return s.replace('.', ',');
+  if (dots >= 1 && commas === 1) return s.replace(/\./g, '');
+  return null;
 }
 
 amountIn.addEventListener('input', () => {
@@ -236,7 +214,6 @@ function hideError() {
   amountError.classList.remove('visible');
 }
 
-// ===== Löschen =====
 clearAllBtn.addEventListener('click', () => {
   amountIn.value = '';
   hideError();
@@ -244,13 +221,11 @@ clearAllBtn.addEventListener('click', () => {
   amountIn.focus();
 });
 
-// ===== Ausland-Toggle =====
 abroadToggle.addEventListener('change', () => {
   ewrWrapper.classList.toggle('open', abroadToggle.checked);
   calculate();
 });
 
-// ===== EWR-Pill-Toggle =====
 function setEwr(activeBtn, inactiveBtn) {
   activeBtn.classList.add('active');
   activeBtn.setAttribute('aria-pressed', 'true');
@@ -262,7 +237,6 @@ function setEwr(activeBtn, inactiveBtn) {
 ewrInBtn.addEventListener('click',  () => setEwr(ewrInBtn,  ewrOutBtn));
 ewrOutBtn.addEventListener('click', () => setEwr(ewrOutBtn, ewrInBtn));
 
-// ===== Copy-Button =====
 let copyTimeout = null;
 
 copyBtn.addEventListener('click', () => {
@@ -277,15 +251,19 @@ copyBtn.addEventListener('click', () => {
     copyTimeout = setTimeout(() => copyBtn.classList.remove('copied'), 1500);
 
     copyToast.classList.remove('show');
-    void copyToast.offsetWidth; // Reflow → Animation neu starten
+    void copyToast.offsetWidth;
     copyToast.classList.add('show');
   }).catch(() => {});
 });
 
-// ===== ESC: alles löschen =====
 window.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     e.preventDefault();
+    const infoPanel = document.getElementById('infoPanel');
+    if (infoPanel && infoPanel.classList.contains('open')) {
+      closeInfoPanel();
+      return;
+    }
     amountIn.value = '';
     hideError();
     resetResult();
@@ -293,7 +271,6 @@ window.addEventListener('keydown', (e) => {
   }
 });
 
-// ===== Credit =====
 const credit      = document.getElementById('credit');
 const creditHeart = document.getElementById('creditHeart');
 
@@ -325,6 +302,33 @@ if (isTouchDevice) {
   });
 }
 
-// ===== Init =====
+const mobileInfoBtn  = document.getElementById('mobileInfoBtn');
+const infoPanelEl    = document.getElementById('infoPanel');
+const infoPanelClose = document.getElementById('infoPanelClose');
+const mobileBackdrop = document.getElementById('mobileBackdrop');
+
+function openInfoPanel() {
+  infoPanelEl.classList.add('open');
+  mobileBackdrop.classList.add('visible');
+  mobileInfoBtn.setAttribute('aria-expanded', 'true');
+}
+
+function closeInfoPanel() {
+  infoPanelEl.classList.remove('open');
+  mobileBackdrop.classList.remove('visible');
+  mobileInfoBtn.setAttribute('aria-expanded', 'false');
+}
+
+mobileInfoBtn.addEventListener('click', () => {
+  if (infoPanelEl.classList.contains('open')) {
+    closeInfoPanel();
+  } else {
+    openInfoPanel();
+  }
+});
+
+infoPanelClose.addEventListener('click', closeInfoPanel);
+mobileBackdrop.addEventListener('click', closeInfoPanel);
+
 resetResult();
 amountIn.focus();
