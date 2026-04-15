@@ -10,11 +10,11 @@ Funktioniert sowohl auf dem Desktop als auch im mobilen Browser.
 
 ## Installation
 
+Repository klonen und einfach `index.html` in einem beliebigen Browser öffnen:
+
 ```bash
 git clone https://github.com/eliasschlinkert/paypal-kauferschutz-rechner.git
 ```
-
-Danach `index.html` einfach im Browser öffnen.
 
 Bei Bedarf kann zusätzlich ein lokaler Webserver aufgesetzt werden.
 
