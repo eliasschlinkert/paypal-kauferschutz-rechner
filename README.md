@@ -14,7 +14,7 @@ Funktioniert sowohl auf dem Desktop als auch im mobilen Browser.
 git clone https://github.com/eliasschlinkert/paypal-kauferschutz-rechner.git
 ```
 
-Danach `index.html` direkt im Browser öffnen — keine Abhängigkeiten, keine Installation.
+Danach `index.html` einfach im Browser öffnen.
 
 Bei Bedarf kann zusätzlich ein lokaler Webserver aufgesetzt werden.
 
